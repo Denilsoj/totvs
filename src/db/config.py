@@ -14,7 +14,7 @@ con = psycopg2.connect(
     
     )
 
-cursor = con.cursor()
+cursor = con.cursor(cursor_factory=RealDictCursor)
 
 
 
