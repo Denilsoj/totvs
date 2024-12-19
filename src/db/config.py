@@ -14,4 +14,8 @@ con = psycopg2.connect(
     
     )
 
+cursor = con.cursor()
+
+
+
 
