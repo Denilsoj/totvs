@@ -6,7 +6,10 @@ class UpdateDispensationItems:
         """
         UPDATE {schema_name}.{table_name}
         SET fase = 2, classificado = true
-        WHERE modalidade ILIKE '%dispensa%';
+        WHERE
+            modalidade ILIKE '%dispensa%'
+            AND fase = 0
+            AND classificado = false;
         """
     )
 
