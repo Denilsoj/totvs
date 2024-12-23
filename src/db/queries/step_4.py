@@ -1,4 +1,4 @@
-import os
+import os, time
 
 from dotenv import load_dotenv
 import google.generativeai as genai
@@ -177,10 +177,8 @@ class ClassifyContextWithAI:
 
     def _classify_row(self, row):
         descricao = row["objeto"]
-        if len(descricao) < len(row["descrição"]):
-            descricao = row["descrição"]
-        if len(descricao) < len(row["descricao_complementar"]):
-            descricao = row["descricao_complementar"]
+        if len(descricao) < len(row["descricao"]):
+            descricao = row["descricao"]
 
         result = self.chat.send_message(
             self.template_message.format(descricao=descricao)
@@ -189,22 +187,23 @@ class ClassifyContextWithAI:
         return True if str.strip(result.text) == "sim" else False
 
     def execute(self, cursor):
-        count_query = sql.SQL("SELECT count(id) FROM {schema_name}.{table_name};")
+        count_query = sql.SQL(
+            "SELECT count(id) FROM {schema_name}.{table_name} WHERE classificado = false AND fase = 0;"
+        )
         cursor.execute(
             count_query.format(
                 schema_name=sql.Identifier(self.schema_name),
                 table_name=sql.Identifier(self.table_name),
             )
         )
-        total_rows = cursor.fetchone()[0]
+        total_rows = cursor.fetchone()["count"]
+        print(f"Total rows to classify: {total_rows}")
 
         for offset in range(0, total_rows, 100):
             query = sql.SQL(
                 """
                 SELECT * FROM {schema_name}.{table_name}
-                WHERE
-                    classificado = false
-                    AND fase = 0
+                WHERE classificado = false AND fase = 0
                 ORDER BY id LIMIT 100 OFFSET {offset};
                 """
             ).format(
@@ -216,18 +215,24 @@ class ClassifyContextWithAI:
             rows = cursor.fetchall()
 
             for row in rows:
+                time.sleep(10)
+                print(f"- Classifying row {row['id']}")
+
                 if not self._classify_row(row):
                     continue
 
                 try:
                     update_query = sql.SQL(
-                        "UPDATE {schema_name}.{table_name} SET classificacao = true, fase = 4 WHERE id = {id};"
+                        "UPDATE {schema_name}.{table_name} SET classificado = true, fase = 4 WHERE id = {id};"
                     ).format(
                         schema_name=sql.Identifier(self.schema_name),
                         table_name=sql.Identifier(self.table_name),
                         id=sql.Literal(row["id"]),
                     )
                     cursor.execute(update_query)
+                    cursor.connection.commit()
                     print(cursor.statusmessage)
                 except Exception as e:
                     print(f"Erro ao tentar classificar on row {row['id']} (IA): {e}")
+                    cursor.connection.rollback()
+                    exit(1)

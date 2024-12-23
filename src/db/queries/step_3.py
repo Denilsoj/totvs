@@ -102,9 +102,10 @@ class ApplyFilterByOrgan:
                     where_statement=where_statement,
                 )
 
-                print(formatted_query.as_string(cursor))
-
                 cursor.execute(formatted_query)
+                cursor.connection.commit()
                 print(cursor.statusmessage)
             except errors.Error as e:
                 print(f"Erro ao atualizar itens por órgão ({uf}):", e)
+                cursor.connection.rollback()
+                exit(1)

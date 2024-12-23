@@ -22,6 +22,9 @@ class SetUnclassifiedAsApproved:
             )
 
             cursor.execute(formatted_query)
+            cursor.connection.commit()
             print(cursor.statusmessage)
         except errors.Error as e:
             print(f"Erro ao aprovar itens não classificados ({self.table_name}):", e)
+            cursor.connection.rollback()
+            exit(1)

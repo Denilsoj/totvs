@@ -25,6 +25,9 @@ class UpdateDispensationItems:
             )
 
             cursor.execute(formatted_query)
+            cursor.connection.commit()
             print(cursor.statusmessage)
         except errors.Error as e:
             print(f"Erro ao atualizar itens de dispensa ({self.table_name}):", e)
+            cursor.connection.rollback()
+            exit(1)
