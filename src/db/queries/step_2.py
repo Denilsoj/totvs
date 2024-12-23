@@ -4,9 +4,9 @@ from psycopg2 import errors, sql
 class UpdateDispensationItems:
     query = sql.SQL(
         """
-        UPDATE "{schema_name}".{table_name}
+        UPDATE {schema_name}.{table_name}
         SET fase = 2, classificado = true
-        WHERE modalidade ILIKE 'dispensa';
+        WHERE modalidade ILIKE '%dispensa%';
         """
     )
 
