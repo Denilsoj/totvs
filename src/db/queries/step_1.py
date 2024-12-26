@@ -48,6 +48,13 @@ class UpdatedNegativeWords:
                 ]
             )
 
+            conditions += sql.SQL(" OR ") + sql.SQL(" OR ").join(
+                [
+                    sql.SQL("objeto ILIKE {word}").format(word=sql.Literal(f"%{word}%"))
+                    for word in negative_words
+                ]
+            )
+
             final_query = self.query.format(
                 schema_name=sql.Identifier(self.schema_name),
                 table_name=sql.Identifier(self.table_name),
