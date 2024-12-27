@@ -63,7 +63,9 @@ Esta relação de produtos e serviços que a empresa TOTVS oferece e que você c
 57. Gestão de Documentos;
 58. Omnichannel;
 
-E gostaria que voce me retornase apenas, "sim" se o <objeto> e a <descricao> se encaixarem com o contexto dos termos ou "nao" caso contrário. Se nao souber responder, por padrao responda "nao". Note que a resposta deve ser baseada no contexto da <descricao> e nao apenas na presença dos termos e sempre escreva a resposta em letras minusculas e sem acentos.
+E gostaria que voce me retornasse apenas, "sim" se o <objeto> e a <descricao> se encaixarem com o contexto dos termos ou "nao" caso contrário. Se o <objeto> e/ou <descricao> atender parcialmente, pode retornar "sim". Caso o <objeto> e/ou <descricao> estejam incompletos, pode analisar o contexto a partir do que foi fornecido.
+
+Note que a resposta deve ser baseada no contexto do <objeto> e da <descricao> e nao apenas na presença dos termos. sempre escreva a resposta em letras minusculas e sem acentos!
 </tarefa>
 <exemplos>
 1. descricao:  "AQUISIÇÃO DE MOBILIÁRIOS E EQUIPAMENTOS ELETRÔNICOS DESTINADOS A SUPRIR A DEMANDA DA CASA LAR E SECRETÁRIA DE ASSISTÊNCIA SOCIAL DO MUNICÍPIO DE CAFELÂNDIA. ATRAVÉS DE RECURSOS DA EMENDA PARLAMENTAR BANCADA DO PARANÁ N°202371170013, REQUERIDO ATRAVÉS DA PROGRAMAÇÃO SISTEMA DE GESTÃO DE TRANSFERÊNCIA VOLUNTARIAS- SIGTV" resultado: "nao" justificativa: "apesar do texto conter a palavra, nao se encaixa com o contexto da palavra"

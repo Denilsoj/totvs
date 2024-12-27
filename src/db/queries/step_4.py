@@ -1,4 +1,4 @@
-import os, time
+import os
 
 from dotenv import load_dotenv
 import google.generativeai as genai
@@ -13,11 +13,11 @@ genai.configure(api_key=os.environ.get("GOOGLE_GENERATIVEAI_API_KEY", ""))
 
 
 class ClassifyContextWithAI:
-    def __init__(self, schema_name, table_name):
+    def __init__(self, schema_name, table_name, ai_model):
         self.schema_name = schema_name
         self.table_name = table_name
 
-        self.classifier = ContextClassifier("gemini")
+        self.classifier = ContextClassifier(ai_model)
 
     def execute(self, cursor):
         count_query = sql.SQL(
@@ -48,7 +48,6 @@ class ClassifyContextWithAI:
             rows = cursor.fetchall()
 
             for row in rows:
-                time.sleep(5)
                 print(f"- Classifying row {row['id']}")
 
                 fase = (

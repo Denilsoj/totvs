@@ -1,4 +1,4 @@
-import os
+import os, time
 
 import google.generativeai as genai
 from dotenv import load_dotenv
@@ -21,6 +21,7 @@ class GeminiClassifier(BaseClassifier):
         self.chat.send_message(INITIAL_PROMPT)
 
     def classify(self, object: str, description: str) -> bool:
+        time.sleep(5)
         result = self.chat.send_message(
             TEMPLATE_MESSAGE.format(object=object, description=description)
         )
