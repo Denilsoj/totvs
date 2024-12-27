@@ -32,7 +32,7 @@ class ClassifyContextWithAI:
     13. Suporte ao ERP;
     14. Protheus; 
     15. RM;
-    16. RH
+    16. RH;
     17. Sistema de Recursos Humanos;
     18. Solução para Gestão de RH;
     19. Sistema para Gestão de pessoas.
@@ -57,7 +57,7 @@ class ClassifyContextWithAI:
     38. Gestão de departamento jurídico; 
     39. Controle de processos judiciais; 
     40. Controle de processos ou procedimentos administrativos; 
-    41. Controle de processos disciplinares
+    41. Controle de processos disciplinares;
     42. Sistema de gestão hospitalar;
     43. Software de gestão hospitalar;
     44. Sistema hospitalar;
@@ -76,88 +76,6 @@ class ClassifyContextWithAI:
     57. Gestão de Documentos;
     58. Omnichannel;
 
-    Verifique também a ocorrência de termos relacionados aos concorrentes da empresa TOTVS, como:
-
-    1. MXM;
-    2. Sydle;
-    3. Benner;
-    4. Alfa Sistemas;
-    5. Sankhya;
-    6. Senior Sistemas;
-    7. SoftPlan;
-    8. Beta Sistemas;
-    9. Sonda;
-    10. SAP;
-    11. Microsoft;
-    12. Techne;
-    13. Philips Medical;
-    14. MV Sistemas;
-    15. LG Informática;
-    16. TIVIT;
-    17. Edusoft;
-    18. Solutis;
-    19. Totvs;
-    20. Oracle;
-    21. SEIDOR
-    22. DELAWARE
-    23. MIGNOW TECHNOLOGY
-    24. NUMEN
-    25. NTT DATA
-    26. EXED
-    27. ACCENTURE
-    28. CAST GROUP
-    29. EPI-USE
-    30. SPRO
-    31. GYANSYS
-    32. EY
-    33. T-SYSTEMS
-    34. DELOITTE
-    35. PWC
-    36. CONVISTA
-    37. MSG
-    38. CAPGEMINI
-    39. AVVALE
-    40. ATOS
-    41. MINSAIT
-    42. IBM
-    43. DXC
-    44. KPMG
-    45. SNP
-    46. SOFTTEK
-    47. COGNIZANT
-    48. ACCENTURE
-    49. THOMSON REUTERS
-    50. KORBER
-    51. CLOUD 4C
-    52. ADIANTA
-    53. BOAVISTA TECNOLOGIA
-    54. EDUSOFT
-    55. FLEXY
-    56. HDANDIT
-    57. ILOG
-    58. LOBTEC
-    59. LINTER
-    60. LOGUS SISTEMAS
-    61. QLIK
-    62. QUIRIUS
-    63. NARWAL
-    64. MGP
-    65. TEIKO
-    66. NEXERA
-    67. ANALIZE
-    68. APIPASS
-    69. CCM
-    70. NUVEM DATACOM
-    71. ARTURIA
-    72. FUSION
-    73. LANDIX
-    74. SOVIS
-    75. MEGGAZ TECNOLOGIA
-    76. KABEVI
-    77. ITFOURBS
-    78. Corpore Soluções
-    79. SENSUS
-
     E gostaria que voce me retornase apenas, "sim" se a <descricao> se encaixar com o contexto dos termos ou "nao" caso contrário. Se nao souber responder, por padrao responda "nao". Note que a resposta deve ser baseada no contexto da <descricao> e nao apenas na presença dos termos e sempre escreva a resposta em letras minusculas e sem acentos.
     </tarefa>
     <exemplos>
@@ -165,7 +83,7 @@ class ClassifyContextWithAI:
     </exemplos>
     """
 
-    template_message = "Verifique a descrição a seguir e valide se ela se aplica ao contexto de licitações favoráveis à empresa TOTVS: <descricao>{descricao}</descricao>"
+    template_message = "Verifique a descrição a seguir e valide se ela se aplica ao contexto de licitações favoráveis à empresa TOTVS conforme explicado anteriormente: <descricao>{descricao}</descricao>"
 
     def __init__(self, schema_name, table_name):
         self.schema_name = schema_name
@@ -215,18 +133,18 @@ class ClassifyContextWithAI:
             rows = cursor.fetchall()
 
             for row in rows:
-                time.sleep(10)
+                time.sleep(5)
                 print(f"- Classifying row {row['id']}")
 
-                if not self._classify_row(row):
-                    continue
+                fase = 5 if self._classify_row(row) else 4
 
                 try:
                     update_query = sql.SQL(
-                        "UPDATE {schema_name}.{table_name} SET classificado = true, fase = 4 WHERE id = {id};"
+                        "UPDATE {schema_name}.{table_name} SET classificado = true, fase = {fase} WHERE id = {id};"
                     ).format(
                         schema_name=sql.Identifier(self.schema_name),
                         table_name=sql.Identifier(self.table_name),
+                        fase=sql.Literal(fase),
                         id=sql.Literal(row["id"]),
                     )
                     cursor.execute(update_query)
