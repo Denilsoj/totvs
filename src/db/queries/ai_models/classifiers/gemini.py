@@ -4,7 +4,10 @@ import google.generativeai as genai
 from dotenv import load_dotenv
 
 from db.queries.ai_models.classifiers.base import BaseClassifier
-from db.queries.ai_models.classifiers.helpers import INITIAL_PROMPT, TEMPLATE_MESSAGE
+from db.queries.ai_models.classifiers.helpers import (
+    INITIAL_PROMPT_GEMINI,
+    TEMPLATE_MESSAGE,
+)
 
 
 load_dotenv()
@@ -18,7 +21,7 @@ class GeminiClassifier(BaseClassifier):
         self.chat = gemini.start_chat()
 
     def initialize(self):
-        self.chat.send_message(INITIAL_PROMPT)
+        self.chat.send_message(INITIAL_PROMPT_GEMINI)
 
     def classify(self, object: str, description: str) -> bool:
         time.sleep(5)

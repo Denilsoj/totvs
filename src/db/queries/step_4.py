@@ -32,17 +32,18 @@ class ClassifyContextWithAI:
         total_rows = cursor.fetchone()["count"]
         print(f"Total rows to classify: {total_rows}")
 
-        for offset in range(0, total_rows, 100):
+        self.classifier.model.initialize()
+
+        while total_rows > 0:
             query = sql.SQL(
                 """
                 SELECT * FROM {schema_name}.{table_name}
                 WHERE classificado = false AND fase = 0
-                ORDER BY id LIMIT 100 OFFSET {offset};
+                ORDER BY id LIMIT 100;
                 """
             ).format(
                 schema_name=sql.Identifier(self.schema_name),
                 table_name=sql.Identifier(self.table_name),
-                offset=sql.Literal(offset),
             )
             cursor.execute(query)
             rows = cursor.fetchall()
@@ -51,7 +52,11 @@ class ClassifyContextWithAI:
                 print(f"- Classifying row {row['id']}")
 
                 fase = (
-                    5 if self.classifier.execute(row["objeto"], row["descricao"]) else 4
+                    5
+                    if self.classifier.execute(
+                        row["objeto"], row["descricao"], row["descricao_comp"]
+                    )
+                    else 4
                 )
 
                 try:
@@ -70,3 +75,11 @@ class ClassifyContextWithAI:
                     print(f"Erro ao tentar classificar on row {row['id']} (IA): {e}")
                     cursor.connection.rollback()
                     exit(1)
+
+            cursor.execute(
+                count_query.format(
+                    schema_name=sql.Identifier(self.schema_name),
+                    table_name=sql.Identifier(self.table_name),
+                )
+            )
+            total_rows = cursor.fetchone()["count"]

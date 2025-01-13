@@ -16,5 +16,5 @@ class ContextClassifier:
         self.model = self.models[model]()
         self.model.initialize()
 
-    def execute(self, object, description) -> bool:
-        return self.model.classify(object, description)
+    def execute(self, object, description, complete_description) -> bool:
+        return self.model.classify(object, description, complete_description)

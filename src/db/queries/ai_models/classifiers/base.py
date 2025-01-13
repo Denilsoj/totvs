@@ -7,5 +7,5 @@ class BaseClassifier(ABC):
         pass
 
     @abstractmethod
-    def classify(self, object, description) -> bool:
+    def classify(self, object, description, complete_description) -> bool:
         pass
