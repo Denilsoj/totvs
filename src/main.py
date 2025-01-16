@@ -17,6 +17,7 @@ class Command(ArgumentParser):
         self.add_argument(
             "--dump_table", type=str, help="Dump table name", required=True
         )
+        self.add_argument("--ai_model", type=str, help="AI model to use", required=True)
 
     def run(self):
         args = self.parse_args()
@@ -50,7 +51,7 @@ class Command(ArgumentParser):
         print("Step 3 done!")
 
         print("Step 4: Classify context with AI...")
-        step_4 = ClassifyContextWithAI(args.schema, args.table)
+        step_4 = ClassifyContextWithAI(args.schema, args.table, args.ai_model)
         step_4.execute(config.cursor)
         print("Step 4 done!")
 

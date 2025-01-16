@@ -24,6 +24,8 @@ class ConfigDB:
         try:
             queries = [
                 f'CREATE TABLE IF NOT EXISTS "{schema}"."{table_name}" AS SELECT * FROM "{schema}"."{dump_table}"',
+                f'ALTER TABLE "{schema}"."{table_name}" ADD COLUMN IF NOT EXISTS classificado BOOLEAN DEFAULT false',
+                f'ALTER TABLE "{schema}"."{table_name}" ADD COLUMN IF NOT EXISTS fase INTEGER DEFAULT 0',
                 f'UPDATE "{schema}"."{table_name}" SET classificado = false, fase = 0',
                 f"UPDATE \"{schema}\".\"{table_name}\" SET modalidade = 'Outras modalidades' WHERE modalidade = '0'",
                 f"UPDATE \"{schema}\".\"{table_name}\" SET modalidade = 'Pregão eletrônico' WHERE modalidade = '5'",
