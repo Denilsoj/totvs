@@ -1,15 +1,7 @@
-import os
-
-from dotenv import load_dotenv
-import google.generativeai as genai
 from psycopg2 import sql
 
 from db.queries.ai_models.strategy import ContextClassifier
-
-
-load_dotenv()
-
-genai.configure(api_key=os.environ.get("GOOGLE_GENERATIVEAI_API_KEY", ""))
+from utils import check_column_exists
 
 
 class ClassifyContextWithAI:
@@ -34,52 +26,58 @@ class ClassifyContextWithAI:
 
         self.classifier.model.initialize()
 
-        while total_rows > 0:
-            query = sql.SQL(
-                """
-                SELECT * FROM {schema_name}.{table_name}
-                WHERE classificado = false AND fase = 0
-                ORDER BY id LIMIT 100;
-                """
-            ).format(
+        descricao_comp_column_exists = check_column_exists(
+            cursor, self.schema_name, self.table_name, "descricao_comp"
+        )
+
+        columns = ["id", "objeto", "descricao"]
+        if descricao_comp_column_exists:
+            columns.append("descricao_comp")
+
+        query = sql.SQL(
+            """
+            SELECT {column_names} FROM {schema_name}.{table_name}
+            WHERE classificado = false AND fase = 0
+            ORDER BY id;
+            """
+        ).format(
+            schema_name=sql.Identifier(self.schema_name),
+            table_name=sql.Identifier(self.table_name),
+            column_names=sql.SQL(",").join(map(sql.Identifier, columns)),
+        )
+        cursor.execute(query)
+        rows = cursor.fetchall()
+
+        for row in rows:
+            print(f"- Classifying row {row['id']}")
+
+            approved = self.classifier.execute(
+                row["objeto"], row["descricao"], row.get("descricao_comp")
+            )
+            if approved:
+                continue
+
+            try:
+                update_query = sql.SQL(
+                    "UPDATE {schema_name}.{table_name} SET classificado = true, fase = {fase} WHERE id = {id};"
+                ).format(
+                    schema_name=sql.Identifier(self.schema_name),
+                    table_name=sql.Identifier(self.table_name),
+                    fase=sql.Literal(4),
+                    id=sql.Literal(row["id"]),
+                )
+                cursor.execute(update_query)
+                cursor.connection.commit()
+                print(cursor.statusmessage)
+            except Exception as e:
+                print(f"Erro ao tentar classificar on row {row['id']} (IA): {e}")
+                cursor.connection.rollback()
+                exit(1)
+
+        cursor.execute(
+            count_query.format(
                 schema_name=sql.Identifier(self.schema_name),
                 table_name=sql.Identifier(self.table_name),
             )
-            cursor.execute(query)
-            rows = cursor.fetchall()
-
-            for row in rows:
-                print(f"- Classifying row {row['id']}")
-
-                fase = (
-                    5
-                    if self.classifier.execute(
-                        row["objeto"], row["descricao"], row["descricao_comp"]
-                    )
-                    else 4
-                )
-
-                try:
-                    update_query = sql.SQL(
-                        "UPDATE {schema_name}.{table_name} SET classificado = true, fase = {fase} WHERE id = {id};"
-                    ).format(
-                        schema_name=sql.Identifier(self.schema_name),
-                        table_name=sql.Identifier(self.table_name),
-                        fase=sql.Literal(fase),
-                        id=sql.Literal(row["id"]),
-                    )
-                    cursor.execute(update_query)
-                    cursor.connection.commit()
-                    print(cursor.statusmessage)
-                except Exception as e:
-                    print(f"Erro ao tentar classificar on row {row['id']} (IA): {e}")
-                    cursor.connection.rollback()
-                    exit(1)
-
-            cursor.execute(
-                count_query.format(
-                    schema_name=sql.Identifier(self.schema_name),
-                    table_name=sql.Identifier(self.table_name),
-                )
-            )
-            total_rows = cursor.fetchone()["count"]
+        )
+        total_rows = cursor.fetchone()["count"]

@@ -1,5 +1,7 @@
 from psycopg2 import errors, sql
 
+from utils import check_column_exists
+
 
 class UpdatedNegativeWords:
     query = sql.SQL(
@@ -17,10 +19,7 @@ class UpdatedNegativeWords:
     def execute(self, cursor):
         try:
             negative_words = [
-                "Office",
                 "Office 365",
-                "SQL",
-                "Windows",
                 "Adobe",
                 "Autocad",
                 "CorelDraw",
@@ -37,6 +36,9 @@ class UpdatedNegativeWords:
                 "Creative",
                 "E-Mobility",
                 "BPO",
+                "Jira",
+                "Kaspersky",
+                "Dynatrace",
             ]
 
             conditions = sql.SQL(" OR ").join(
@@ -54,6 +56,18 @@ class UpdatedNegativeWords:
                     for word in negative_words
                 ]
             )
+
+            descricao_comp_column_exists = check_column_exists(
+                cursor, self.schema_name, self.table_name, "descricao_comp"
+            )
+            
+            if descricao_comp_column_exists:
+                conditions += sql.SQL(" OR ") + sql.SQL(" OR ").join(
+                    [
+                        sql.SQL("descricao_comp ILIKE {word}").format(word=sql.Literal(f"%{word}%"))
+                        for word in negative_words
+                    ]
+                )
 
             final_query = self.query.format(
                 schema_name=sql.Identifier(self.schema_name),
