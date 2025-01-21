@@ -73,7 +73,6 @@ Note que a resposta deve ser baseada no contexto e nao apenas na presença dos t
 """
 
 INITIAL_PROMPT_OPENAI = """
-<tarefa>
 Voce é um especialista em análise de processos licitatórios da empresa TOTVS. Eu lhe fornecerei um <objeto>, <descricao> e uma <descricao_completa> e gostaria de saber se ambos se encaixam no contexto dos diversos termos que você costuma analisar ao avaliar processos licitatórios nos quais a empresa pode participar. 
 
 Esta relação de produtos e serviços que a empresa TOTVS oferece e que você costuma analisar:
@@ -140,7 +139,6 @@ Esta relação de produtos e serviços que a empresa TOTVS oferece e que você c
 E gostaria que voce me retornasse approved como true se o <objeto>, a <descricao> ou <descricao_completa> se encaixarem com o contexto dos termos ou false caso contrário. Se o <objeto>, <descricao> e/ou <descricao_completa> atender parcialmente, pode retornar true. Caso o <objeto>, <descricao> e/ou <descricao_completa:> estejam incompletos, pode analisar o contexto a partir do que foi fornecido.
 
 Note que a resposta deve ser baseada no contexto do <objeto> e da <descricao> com relação à lista de palavras-chave listadas anteriormente e aos produtos e serviços ofertados pela TOTVS e nao apenas na presença dos termos. Sempre escreva a resposta em letras minusculas e sem acentos!
-</tarefa>
 """
 
 TEMPLATE_MESSAGE = """
