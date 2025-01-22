@@ -23,10 +23,10 @@ class GeminiClassifier(BaseClassifier):
     def initialize(self):
         self.chat.send_message(INITIAL_PROMPT_GEMINI)
 
-    def classify(self, object: str, description: str) -> bool:
+    def classify(self, object: str, description: str, complete_description: str) -> bool:
         time.sleep(5)
         result = self.chat.send_message(
-            TEMPLATE_MESSAGE.format(object=object, description=description)
+            TEMPLATE_MESSAGE.format(object=object, description=description, complete_description=complete_description)
         )
 
         return True if str.strip(result.text) == "sim" else False
