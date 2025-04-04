@@ -1,4 +1,4 @@
-from db.config import ConfigDB
+from src.db.config import ConfigDB
 
 
 config = ConfigDB()

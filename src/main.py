@@ -1,11 +1,11 @@
 from argparse import ArgumentParser
 
-from db.config import ConfigDB
-from db.queries.step_1 import UpdatedNegativeWords
-from db.queries.step_2 import UpdateDispensationItems
-from db.queries.step_3 import ApplyFilterByOrgan
-from db.queries.step_4 import ClassifyContextWithAI
-from db.queries.step_5 import SetUnclassifiedAsApproved
+from .db.config import ConfigDB
+from .db.queries.step_1 import UpdatedNegativeWords
+from .db.queries.step_2 import UpdateDispensationItems
+from .db.queries.step_3 import ApplyFilterByOrgan
+from .db.queries.step_4 import ClassifyContextWithAI
+from .db.queries.step_5 import SetUnclassifiedAsApproved
 
 
 class Command(ArgumentParser):

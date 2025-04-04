@@ -1,6 +1,6 @@
 from psycopg2 import sql
 
-from db.config import ConfigDB
+from src.db.config import ConfigDB
 
 
 def clean_cnpj(cnpj):

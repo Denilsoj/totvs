@@ -1,7 +1,7 @@
-from db.queries.ai_models.classifiers.base import BaseClassifier
-from db.queries.ai_models.classifiers.custom import CustomClassifier
-from db.queries.ai_models.classifiers.gemini import GeminiClassifier
-from db.queries.ai_models.classifiers.openai import OpenAIClassifier
+from src.db.queries.ai_models.classifiers.base import BaseClassifier
+from src.db.queries.ai_models.classifiers.custom import CustomClassifier
+from src.db.queries.ai_models.classifiers.gemini import GeminiClassifier
+from src.db.queries.ai_models.classifiers.openai import OpenAIClassifier
 
 
 class ContextClassifier:

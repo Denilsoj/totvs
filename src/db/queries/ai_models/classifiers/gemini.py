@@ -3,8 +3,8 @@ import os, time
 import google.generativeai as genai
 from dotenv import load_dotenv
 
-from db.queries.ai_models.classifiers.base import BaseClassifier
-from db.queries.ai_models.classifiers.helpers import (
+from src.db.queries.ai_models.classifiers.base import BaseClassifier
+from src.db.queries.ai_models.classifiers.helpers import (
     INITIAL_PROMPT_GEMINI,
     TEMPLATE_MESSAGE,
 )

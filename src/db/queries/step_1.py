@@ -1,6 +1,6 @@
 from psycopg2 import errors, sql
 
-from utils import check_column_exists
+from src.utils import check_column_exists
 
 
 class UpdatedNegativeWords:

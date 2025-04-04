@@ -4,7 +4,7 @@ import pandas as pd
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.svm import LinearSVC
 
-from db.queries.ai_models.classifiers.base import BaseClassifier
+from src.db.queries.ai_models.classifiers.base import BaseClassifier
 
 
 nltk.download("stopwords")

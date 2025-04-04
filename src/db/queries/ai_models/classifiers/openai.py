@@ -4,8 +4,8 @@ from dotenv import load_dotenv
 from openai import OpenAI
 from pydantic import BaseModel
 
-from db.queries.ai_models.classifiers.base import BaseClassifier
-from db.queries.ai_models.classifiers.helpers import (
+from src.db.queries.ai_models.classifiers.base import BaseClassifier
+from src.db.queries.ai_models.classifiers.helpers import (
     INITIAL_PROMPT_OPENAI,
     TEMPLATE_MESSAGE,
 )

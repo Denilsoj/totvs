@@ -1,7 +1,7 @@
 from psycopg2 import sql
 
-from db.queries.ai_models.strategy import ContextClassifier
-from utils import check_column_exists
+from src.db.queries.ai_models.strategy import ContextClassifier
+from src.utils import check_column_exists
 
 
 class ClassifyContextWithAI:
