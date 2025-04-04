@@ -19,15 +19,16 @@ def insert_data_table(schema, table_name, **d):
         try:
             # Preparando a consulta SQL com 17 marcadores de posição
             query = sql.SQL("""
-                INSERT INTO {schema}.{table_name} (
+                    INSERT INTO {schema}.{table_name} (
                     item_id, data, orgao, uf, objeto,
                     cnpj, razao_social, marca, modelo, fabricante,
                     unidade_de_medida, modalidade, valor_total, valor_unitario, base,
                     descricao, termo, classificado, fase
-                ) VALUES (
+                    ) VALUES (
                     %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, 
                     %s, %s, %s, %s, %s, %s, %s, %s, %s
-                )
+                    )
+                    ON CONFLICT (item_id) DO NOTHING;
             """).format(
                 schema=sql.Identifier(schema),
                 table_name=sql.Identifier(table_name)
