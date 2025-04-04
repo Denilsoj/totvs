@@ -1,0 +1,10 @@
+services:
+  totvs:
+    image: python:3.13-slim-bookworm
+    container_name: totvs_scripts
+    command: ['sleep', 'infinity']
+    volumes:
+      - .:/app
+    working_dir: /app
+    env_file:
+      - /.env
