@@ -160,7 +160,7 @@ def update_item_values(schema, table_name, item_id, url_ata, url_edital):
         # update_item_values('02_04_2025', 'dados_tratados', item_id, row['url_ata'], row['url_edital'])
 
 
-with open('src/db/utils/results/totvs_itens.csv', 'rb') as csv_file:
+with open('src/db/utils/results_07_04_2025/totvs_itens.csv', 'rb') as csv_file:
     cleaned_lines = (line.replace(b'\x00', b'') for line in csv_file)
     decoded_lines = (line.decode('utf-8') for line in cleaned_lines)
     csv_reader = csv.DictReader(decoded_lines, delimiter=',')
@@ -170,7 +170,7 @@ with open('src/db/utils/results/totvs_itens.csv', 'rb') as csv_file:
     data_formated = []
 
     for row in csv_reader:
-        insert_data_table('04_04_2025', 'dados_nao_tratados', **row)
+        insert_data_table('07_04_2025', 'dados_nao_tratados', **row)
 
 
 def insert_data_forn(schema, table_name, **d):
